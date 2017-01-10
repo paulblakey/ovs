@@ -769,6 +769,12 @@ netdev_vport_get_ifindex(const struct netdev *netdev_)
     return do_get_ifindex(name);
 }
 
+static int
+netdev_vport_flow_init(struct netdev *netdev_)
+{
+    VLOG_INFO("%s", __func__);
+}
+
 
 #define VPORT_FUNCTIONS(GET_CONFIG, SET_CONFIG,             \
                         GET_TUNNEL_CONFIG, GET_STATUS,      \
@@ -846,7 +852,7 @@ netdev_vport_get_ifindex(const struct netdev *netdev_)
     netdev_tc_flow_put,                                     \
     netdev_tc_flow_get,                                     \
     netdev_tc_flow_del,                                     \
-    netdev_tc_init_flow_api,
+    netdev_vport_flow_init,
 
 
 #define TUNNEL_CLASS(NAME, DPIF_PORT, BUILD_HEADER, PUSH_HEADER, POP_HEADER)   \

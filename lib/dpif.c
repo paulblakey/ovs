@@ -351,12 +351,13 @@ do_open(const char *name, const char *type, bool create, struct dpif **dpifp)
 
     error = registered_class->dpif_class->open(registered_class->dpif_class,
                                                name, create, &dpif);
+    VLOG_INFO("%s, error = %d, create = %d", __func__, error, create);
     if (!error) {
         struct dpif_port_dump port_dump;
         struct dpif_port dpif_port;
 
         ovs_assert(dpif->dpif_class == registered_class->dpif_class);
-
+        VLOG_INFO("%s", __func__);
         DPIF_PORT_FOR_EACH(&dpif_port, &port_dump, dpif) {
             struct netdev *netdev;
             int err = netdev_open(dpif_port.name, dpif_port.type, &netdev);
@@ -558,6 +559,7 @@ dpif_port_add(struct dpif *dpif, struct netdev *netdev, odp_port_t *port_nop)
 
     error = dpif->dpif_class->port_add(dpif, netdev, &port_no);
     if (!error) {
+        VLOG_INFO("%s", __func__);
         VLOG_DBG_RL(&dpmsg_rl, "%s: added %s as port %"PRIu32,
                     dpif_name(dpif), netdev_name, port_no);
 
@@ -589,11 +591,12 @@ dpif_port_del(struct dpif *dpif, odp_port_t port_no)
     COVERAGE_INC(dpif_port_del);
 
     error = dpif->dpif_class->port_del(dpif, port_no);
+    VLOG_INFO("%s %d", __func__, port_no);
     if (!error) {
         VLOG_DBG_RL(&dpmsg_rl, "%s: port_del(%"PRIu32")",
                     dpif_name(dpif), port_no);
 
-        netdev_hmap_port_del(port_no, dpif->dpif_class->type);
+        netdev_hmap_port_del(port_no, dpif->dpif_class);
     } else {
         log_operation(dpif, "port_del", error);
     }

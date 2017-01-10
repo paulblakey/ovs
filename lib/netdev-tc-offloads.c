@@ -500,8 +500,10 @@ netdev_tc_flow_put(struct netdev *netdev,
 
     tc_flow.key.dst_port = key->tp_dst;
     tc_flow.mask.dst_port = mask->tp_dst;
+    tc_flow.mask.dst_port = UINT16_MAX;
     tc_flow.key.src_port = key->tp_src;
     tc_flow.mask.src_port = mask->tp_src;
+    tc_flow.mask.src_port = UINT16_MAX;
 
     tc_flow.ifindex = netdev_get_ifindex(netdev);
 

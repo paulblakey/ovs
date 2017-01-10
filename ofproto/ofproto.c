@@ -2038,6 +2038,7 @@ ofproto_port_del(struct ofproto *ofproto, ofp_port_t ofp_port)
     const char *name = ofport ? netdev_get_name(ofport->netdev) : "<unknown>";
     struct simap_node *ofp_request_node;
     int error;
+    VLOG_INFO("%s %d", __func__, ofp_port);
 
     ofp_request_node = simap_find(&ofproto->ofp_requests, name);
     if (ofp_request_node) {

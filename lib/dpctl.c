@@ -473,7 +473,7 @@ dpctl_del_if(int argc, const char *argv[], struct dpctl_params *dpctl_p)
             lasterror = ENOENT;
             continue;
         }
-
+	
         error = dpif_port_del(dpif, port);
         if (error) {
             dpctl_error(dpctl_p, error, "deleting port %s from %s failed",

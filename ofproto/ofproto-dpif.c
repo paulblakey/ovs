@@ -583,6 +583,7 @@ type_run(const char *type)
         }
 
         SIMAP_FOR_EACH (node, &tmp_backers) {
+	    VLOG_INFO("<<<<<<<<<<<<<<< %s %d", __func__,   u32_to_odp(node->data));
             dpif_port_del(backer->dpif, u32_to_odp(node->data));
         }
         simap_destroy(&tmp_backers);
@@ -739,6 +740,7 @@ process_dpif_port_change(struct dpif_backer *backer, const char *devname)
     } else if (!ofproto) {
         /* The port was added, but we don't know with which
          * ofproto we should associate it.  Delete it. */
+	 VLOG_INFO(" ,<<<<<< %s %d", __func__,  port.port_no);
         dpif_port_del(backer->dpif, port.port_no);
     } else {
         struct ofport_dpif *ofport;
@@ -917,6 +919,7 @@ open_dpif_backer(const char *type, struct dpif_backer **backerp)
     dpif_port_dump_start(&port_dump, backer->dpif);
     while (dpif_port_dump_next(&port_dump, &port)) {
         node = shash_find(&init_ofp_ports, port.name);
+	VLOG_INFO("node: %p, port.name: %s, basename: %s", node, port.name, dpif_base_name(backer->dpif));
         if (!node && strcmp(port.name, dpif_base_name(backer->dpif))) {
             garbage = xmalloc(sizeof *garbage);
             garbage->odp_port = port.port_no;
@@ -926,6 +929,7 @@ open_dpif_backer(const char *type, struct dpif_backer **backerp)
     dpif_port_dump_done(&port_dump);
 
     LIST_FOR_EACH_POP (garbage, list_node, &garbage_list) {
+	VLOG_INFO("<<<<<<<<<<< %s %d", __func__,   garbage->odp_port);
         dpif_port_del(backer->dpif, garbage->odp_port);
         free(garbage);
     }
@@ -1841,6 +1845,7 @@ port_destruct(struct ofport *port_, bool del)
          * assumes that removal of attached ports will happen as part of
          * destruction. */
         if (!port->is_tunnel) {
+	    VLOG_INFO("<<<<<<<<<< %s %d", __func__, port->odp_port);
             dpif_port_del(ofproto->backer->dpif, port->odp_port);
         }
     }
@@ -3494,7 +3499,9 @@ port_add(struct ofproto *ofproto_, struct netdev *netdev)
     }
 
     dp_port_name = netdev_vport_get_dpif_port(netdev, namebuf, sizeof namebuf);
+    VLOG_INFO("%s(%s)", __func__, dp_port_name);
     if (!dpif_port_exists(ofproto->backer->dpif, dp_port_name)) {
+        VLOG_INFO("%s exists", __func__);
         odp_port_t port_no = ODPP_NONE;
         int error;
 
@@ -3526,6 +3533,7 @@ port_del(struct ofproto *ofproto_, ofp_port_t ofp_port)
     if (!ofport) {
         return 0;
     }
+    VLOG_INFO("<<<<<<<<< %s %d", __func__, ofp_port);
 
     sset_find_and_delete(&ofproto->ghost_ports,
                          netdev_get_name(ofport->up.netdev));

@@ -2100,6 +2100,7 @@ int
 netdev_hmap_port_add(struct netdev *netdev, const void *obj,
                      struct dpif_port *dpif_port)
 {
+    VLOG_INFO("%s(%s, %d)", __func__, netdev->name, dpif_port->port_no);
     size_t hash = hash_int(dpif_port->port_no, hash_pointer(obj, 0));
     struct port_to_netdev_data *data = xzalloc(sizeof *data);
     struct ifindex_to_port_data *ifidx = xzalloc(sizeof *ifidx);
@@ -2112,6 +2113,8 @@ netdev_hmap_port_add(struct netdev *netdev, const void *obj,
 
     ifidx->ifindex = netdev_get_ifindex(netdev);
     ifidx->port = dpif_port->port_no;
+
+    netdev_init_flow_api(netdev);
 
     hmap_insert(&port_to_netdev, &data->node, hash);
     hmap_insert(&ifindex_to_port, &ifidx->node, ifidx->ifindex);

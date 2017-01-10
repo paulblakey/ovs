@@ -2020,9 +2020,11 @@ parse_flow_put(struct dpif_netlink *dpif, struct dpif_flow_put *put)
     int err;
 
     /* 0x1234 - fake eth type sent to probe feature */
-    if (put->flags & DPIF_FP_PROBE || match.flow.dl_type == htons(0x1234)) {
+    if (put->flags & DPIF_FP_PROBE) {
         return false;
     }
+
+    VLOG_INFO("atch.flow.dl_type: %x", ntohs(match.flow.dl_type));
 
     if (parse_key_and_mask_to_match(put->key, put->key_len, put->mask,
                                 put->mask_len, &match)) {

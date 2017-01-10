@@ -859,6 +859,7 @@ bridge_delete_or_reconfigure_ports(struct bridge *br)
         del = add_ofp_port(ofproto_port.ofp_port, del, &n, &allocated);
     }
     for (i = 0; i < n; i++) {
+	VLOG_INFO("%s %d",  __func__, del[i]);
         ofproto_port_del(br->ofproto, del[i]);
     }
     free(del);

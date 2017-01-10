@@ -231,13 +231,13 @@ tnl_port_reconfigure(const struct ofport_dpif *ofport,
 
     fat_rwlock_wrlock(&rwlock);
     tnl_port = tnl_find_ofport(ofport);
+    VLOG_INFO("%s" , __func__);
     if (!tnl_port) {
         changed = tnl_port_add__(ofport, netdev, odp_port, false, native_tnl, name);
     } else if (tnl_port->netdev != netdev
                || tnl_port->match.odp_port != odp_port
                || tnl_port->change_seq != netdev_get_change_seq(tnl_port->netdev)) {
-        VLOG_DBG("reconfiguring %s", tnl_port_get_name(tnl_port));
-        tnl_port_del__(ofport);
+
         tnl_port_add__(ofport, netdev, odp_port, true, native_tnl, name);
         changed = true;
     }
@@ -279,6 +279,7 @@ tnl_port_del__(const struct ofport_dpif *ofport) OVS_REQ_WRLOCK(rwlock)
 void
 tnl_port_del(const struct ofport_dpif *ofport) OVS_EXCLUDED(rwlock)
 {
+    VLOG_INFO("%s" , __func__);
     fat_rwlock_wrlock(&rwlock);
     tnl_port_del__(ofport);
     fat_rwlock_unlock(&rwlock);
